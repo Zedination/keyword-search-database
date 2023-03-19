@@ -42,6 +42,25 @@ const webviewConfig = {
   ],
 };
 
+
+const webviewQueryKeywordConfig = {
+  ...baseConfig,
+  target: "es2020",
+  format: "esm",
+  entryPoints: ["./src/webview/query-keyword.ts"],
+  outfile: "./out/query-keyword.js",
+  plugins: [
+    // Copy webview css files to `out` directory unaltered
+    copy({
+      resolveFrom: "cwd",
+      assets: {
+        from: ["./src/webview/*.css"],
+        to: ["./out"],
+      },
+    }),
+  ],
+};
+
 // This watch config adheres to the conventions of the esbuild-problem-matchers
 // extension (https://github.com/connor4312/esbuild-problem-matchers#esbuild-via-js)
 /** @type BuildOptions */
@@ -75,6 +94,7 @@ const watchConfig = {
       });
       await build({
         ...webviewConfig,
+        ...webviewQueryKeywordConfig,
         ...watchConfig,
       });
       console.log("[watch] build finished");
@@ -82,6 +102,7 @@ const watchConfig = {
       // Build extension and webview code
       await build(extensionConfig);
       await build(webviewConfig);
+      await build(webviewQueryKeywordConfig);
       console.log("build complete");
     }
   } catch (err) {

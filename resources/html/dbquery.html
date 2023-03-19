@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
+  <link rel="stylesheet" href="${styleUri}">
+  <link rel="stylesheet" href="${codiconUri}">
+  <link rel="stylesheet" href="${boostrapGrid}">
+  <title>Document</title>
+</head>
+
+<body>
+  <h1>Kết quả</h1>
+  <br>
+  <br>
+  <!-- Indicates that the divider semantically separates content -->
+  <vscode-divider style="margin-top: 20px; margin-bottom: 20px;" role="separator"></vscode-divider>
+  <div class="container-fluid">
+    <div class="row">
+      <h3 class="text-center">Kết quả tìm kiếm cho từ khóa "${keyword}"</h3>
+      <div class="col-md-12">
+        <vscode-panels>
+            <vscode-panel-tab id="tab-1">COLUMNS</vscode-panel-tab>
+            <vscode-panel-tab id="tab-2">TABLES</vscode-panel-tab>
+            <vscode-panel-tab id="tab-3">PROCEDURES</vscode-panel-tab>
+            <vscode-panel-tab id="tab-4">FUNCTIONS</vscode-panel-tab>
+            <vscode-panel-tab id="tab-5">TRIGGERS</vscode-panel-tab>
+            <vscode-panel-view id="view-1">
+                <vscode-data-grid id="columns-grid" style="width: max-content;" aria-label="Basic"></vscode-data-grid>
+            </vscode-panel-view>
+            <vscode-panel-view id="view-2">
+                <vscode-data-grid id="tables-grid" style="width: max-content;" aria-label="Basic"></vscode-data-grid>
+            </vscode-panel-view>
+            <vscode-panel-view id="view-3">
+                <vscode-data-grid id="procedures-grid" style="width: max-content;" aria-label="Basic"></vscode-data-grid>
+            </vscode-panel-view>
+            <vscode-panel-view id="view-4">
+                <vscode-data-grid id="function-grid" style="width: max-content;" aria-label="Basic"></vscode-data-grid>
+            </vscode-panel-view>
+            <vscode-panel-view id="view-5">
+                <vscode-data-grid id="trigger-grid" style="width: max-content;" aria-label="Basic"></vscode-data-grid>
+            </vscode-panel-view>
+          </vscode-panels>
+      </div>
+    </div>
+  </div>
+  <script type="module" nonce="${nonce}" src="${webviewUri}"></script>
+</body>
+
+</html>

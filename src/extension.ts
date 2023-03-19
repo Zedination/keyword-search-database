@@ -3,10 +3,10 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { v4 as uuidv4 } from "uuid";
-import { getConnectionDetailWebviewContent } from "./ui/getWebviewContent";
+import { getConnectionDetailWebviewContent, getDatabaseWebviewContent } from "./ui/getWebviewContent";
 import { ConnectionDataProvider } from "./providers/ConnectionDataProvider";
 import { Connection } from './model/Connection';
-import {testConnection} from './utilities/databaseUtil';
+import {testConnection, queryKeyword} from './utilities/databaseUtil';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -117,6 +117,41 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(openConnection);
 	context.subscriptions.push(createConnection);
 	context.subscriptions.push(deleteConnection);
+
+	/*============================= query keywords command =================================*/
+	const querySelectedKeyword = vscode.commands.registerCommand("queryKeyword.showDetailResult", async () => {
+		// get selected text
+		let selectedText;
+		const editor = vscode.window.activeTextEditor;
+		if (!editor) return;
+		selectedText = editor.document.getText(editor.selection);;
+		if (!selectedText || selectedText === '') return;
+		let panelDetailResult = vscode.window.createWebviewPanel(
+			'connectionDetailWebview',
+			'connectionDetailWebview',
+			vscode.ViewColumn.One,
+			{
+				// Enable JavaScript in the webview
+				enableScripts: true,
+				// Restrict the webview to only load resources from the `out` directory
+				localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, "out")],
+			}
+		);
+		const activeConnection = connectionList.find((connection) => connection.isActive === true);
+		
+		if (!activeConnection) return;
+
+		// show loading popup
+		const loadingPopup = vscode.window.createQuickPick();
+		loadingPopup.busy = true;
+		loadingPopup.placeholder = 'Loading...';
+		loadingPopup.show();
+		let data = await queryKeyword(activeConnection, context, selectedText);
+		loadingPopup.hide();
+		panelDetailResult.webview.html = getDatabaseWebviewContent(panelDetailResult.webview, context, selectedText, data);
+	});
+
+	context.subscriptions.push(querySelectedKeyword);
 }
 
 // This method is called when your extension is deactivated

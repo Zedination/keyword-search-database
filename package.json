@@ -18,6 +18,10 @@
         "title": "Hello World"
       },
       {
+        "command": "queryKeyword.showDetailResult",
+        "title": "showDetailResult"
+      },
+      {
         "command": "keyword-search-database.tabConnectionManager",
         "title": "Open connection mamager tab"
       },
@@ -73,9 +77,10 @@
     },
     "keybindings": [
       {
-        "key": "ctrl+alt+c",
-        "command": "keyword-search-database.tabConnectionManager",
-        "mac": "cmd+alt+c"
+        "key": "ctrl+alt+s",
+        "command": "queryKeyword.showDetailResult",
+        "mac": "cmd+alt+s",
+        "when": "editorTextFocus"
       }
     ]
   },
