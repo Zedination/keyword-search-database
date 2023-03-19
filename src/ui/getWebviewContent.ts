@@ -1,3 +1,4 @@
+import { Connection } from './../model/Connection';
 import {ExtensionContext} from "vscode";
 import { Webview, Uri } from "vscode";
 import { getUri } from "../utilities/getUri";
@@ -12,46 +13,119 @@ import * as fs from 'fs';
  * @returns A template string literal containing the HTML that should be
  * rendered within the webview panel
  */
-export function getWebviewContent(webview: Webview, context: ExtensionContext) {
+export function getConnectionDetailWebviewContent(webview: Webview, context: ExtensionContext, connection: Connection) {
   const webviewUri = getUri(webview, context.extensionUri, ["out", "webview.js"]);
   const styleUri = getUri(webview, context.extensionUri, ["out", "style.css"]);
-
+  const boostrapGrid = getUri(webview, context.extensionUri, ["out", "bootstrap-grid.min.css"]);
+  const codiconUri = getUri(webview, context.extensionUri, ["out", "codicon.css"]);
   const nonce = getNonce();
   // let htmlContent = fs.readFileSync(context.asAbsolutePath('resources/html/connection-manager.html'), 'utf8');
 
   webview.onDidReceiveMessage((message) => {
-    // const command = message.command;
-    // switch (command) {
-    //   case "requestNoteData":
-    //     webview.postMessage({
-    //       command: "receiveDataInWebview",
-    //       payload: JSON.stringify(note),
-    //     });
-    //     break;
-    // }
+    const command = message.command;
+    switch (command) {
+      case "requestConnectionData":
+        webview.postMessage({
+          command: "receiveDataInConnectionDetailWebview",
+          payload: JSON.stringify(connection),
+        });
+        break;
+    }
   });
+
+  let isActive = connection.isActive ? 'checked' : '';
+
+  let mysqlChecked = '';
+  let postgresqlChecked = '';
+  let mariadbChecked = '';
+  switch (connection.databaseDriver) {
+    case 'mysql':
+      mysqlChecked = 'selected';
+      break;
+    case 'postgresql':
+      postgresqlChecked = 'selected';
+      break;
+    case 'mariadb':
+      mariadbChecked = 'selected';
+      break;
+    default:
+      break;
+  }
+
 
   return `<!DOCTYPE html>
   <html lang="en">
+  
   <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
+    <meta http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
     <link rel="stylesheet" href="${styleUri}">
+    <link rel="stylesheet" href="${codiconUri}">
+    <link rel="stylesheet" href="${boostrapGrid}">
     <title>Document</title>
   </head>
+  
   <body>
-    <h1>Hello Webview Panel</h1>
+    <h1>Connection Detail</h1>
     <br>
     <br>
-    <section id="notes-form">
-          <vscode-text-field id="title" value="" placeholder="Enter a name">Title</vscode-text-field>
-          <vscode-text-area id="content"value="" placeholder="Write your heart out, Shakespeare!" resize="vertical" rows=15>Note</vscode-text-area>
-          <vscode-text-field id="tags-input" value="" placeholder="Add tags separated by commas">Tags</vscode-text-field>
-          <vscode-button id="submit-button">Save</vscode-button>
-        </section>
+    <!-- Indicates that the divider semantically separates content -->
+    <vscode-divider style="margin-top: 20px; margin-bottom: 20px;" role="separator"></vscode-divider>
+    <div class="container">
+      <div class="row">
+        <h3 class="text-center">${connection.connectionName}</h3>
+        <div class="row">
+          <div class="col-md-8">
+            <vscode-text-field class="full" id="connection-name-id" value="${connection.connectionName}" placeholder="Name of connection">Connection
+              name</vscode-text-field>
+          </div>
+          <div class="col-md-4">
+            <label for="database-driver-id">Database driver:</label>
+          <vscode-dropdown class="full" id="database-driver-id">
+            <vscode-option ${mysqlChecked}>MySQL</vscode-option>
+            <vscode-option ${postgresqlChecked}>PostgreSQL</vscode-option>
+            <vscode-option ${mariadbChecked}>MariaDB</vscode-option>
+          </vscode-dropdown>
+          </div>
+          <br>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+            <vscode-text-field class="full" id="host-name-id" value="${connection.host}" placeholder="Database host">Host</vscode-text-field>
+          </div>
+          <div class="col-md-4">
+            <vscode-text-field class="full" id="port-id" value="${connection.port}" placeholder="Port">Port</vscode-text-field>
+          </div>
+          <br>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <vscode-text-field class="full" id="username-id" value="${connection.username}" placeholder="Username">Username</vscode-text-field>
+          </div>
+          <div class="col-md-4">
+            <vscode-text-field class="full" type="password" id="password-id" value="${connection.password}" placeholder="Password">Password</vscode-text-field>
+          </div>
+          <div class="col-md-4">
+            <vscode-text-field class="full" id="database-id" value="${connection.database}" placeholder="Database">Database</vscode-text-field>
+          </div>
+          <div class="col-md-3" style="padding-top: 20px;">
+            <vscode-checkbox class="full" ${isActive} id="is-active-id">Active connection</vscode-checkbox>
+          </div>
+          <br>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <vscode-button id="test-connection-button-id">Test connection</vscode-button>
+            <vscode-button id="submit-button-id">Save</vscode-button>
+          </div>
+        </div>
+      </div>
+    </div>
     <script type="module" nonce="${nonce}" src="${webviewUri}"></script>
   </body>
+  
   </html>`;
 }

@@ -1,7 +1,7 @@
 export type Connection = {
     id: string,
     connectionName: string,
-    serverType: string,
+    databaseDriver: string,
     host: string,
     port: number,
     username: string,

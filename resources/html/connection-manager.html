@@ -1,16 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
+  <link rel="stylesheet" href="${styleUri}">
+  <link rel="stylesheet" href="${codiconUri}">
+  <link rel="stylesheet" href="${boostrapGrid}">
   <title>Document</title>
 </head>
+
 <body>
-  <h1>Hello Webview Panel</h1>
+  <h1>Connection Detail</h1>
   <br>
   <br>
+  <!-- Indicates that the divider semantically separates content -->
+  <vscode-divider style="margin-top: 20px; margin-bottom: 20px;" role="separator"></vscode-divider>
+  <div class="container">
+    <div class="row">
+      <h3 class="text-center">${connection.connectionName}</h3>
+      <div class="row">
+        <div class="col-md-8">
+          <vscode-text-field class="full" id="connection-name-id" value="${connection.connectionName}" placeholder="Name of connection">Connection
+            name</vscode-text-field>
+        </div>
+        <div class="col-md-4">
+          <label for="database-driver-id">Database driver:</label>
+        <vscode-dropdown class="full" id="database-driver-id">
+          <vscode-option ${mysqlChecked}>MySQL</vscode-option>
+          <vscode-option ${postgresqlChecked}>PostgreSQL</vscode-option>
+          <vscode-option ${mariadbChecked}>MariaDB</vscode-option>
+        </vscode-dropdown>
+        </div>
+        <br>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <vscode-text-field class="full" id="host-name-id" value="${connection.host}" placeholder="Database host">Host</vscode-text-field>
+        </div>
+        <div class="col-md-4">
+          <vscode-text-field class="full" id="port-id" value="${connection.port}" placeholder="Port">Port</vscode-text-field>
+        </div>
+        <br>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <vscode-text-field class="full" id="username-id" value="${connection.username}" placeholder="Username">Username</vscode-text-field>
+        </div>
+        <div class="col-md-4">
+          <vscode-text-field class="full" type="password" id="password-id" value="${connection.password}" placeholder="Password">Password</vscode-text-field>
+        </div>
+        <div class="col-md-4">
+          <vscode-text-field class="full" id="database-id" value="${connection.database}" placeholder="Database">Database</vscode-text-field>
+        </div>
+        <div class="col-md-3" style="padding-top: 20px;">
+          <vscode-checkbox class="full" ${isActive} id="is-active-id">Active connection</vscode-checkbox>
+        </div>
+        <br>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <vscode-button id="test-connection-button-id">Test connection</vscode-button>
+          <vscode-button id="submit-button-id">Save</vscode-button>
+        </div>
+      </div>
+    </div>
+  </div>
   <script type="module" nonce="${nonce}" src="${webviewUri}"></script>
 </body>
+
 </html>
