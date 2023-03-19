@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { getConnectionDetailWebviewContent } from "./ui/getWebviewContent";
 import { ConnectionDataProvider } from "./providers/ConnectionDataProvider";
 import { Connection } from './model/Connection';
+import {testConnection} from './utilities/databaseUtil';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -67,6 +68,8 @@ export function activate(context: vscode.ExtensionContext) {
 							(panelConnectionDetail.webview.html = getConnectionDetailWebviewContent(panelConnectionDetail.webview, context, connection)))
 						: null;
 					break;
+				case 'testConnection':
+					testConnection(connection, context);
 			}
 		});
 		panelConnectionDetail.onDidDispose(

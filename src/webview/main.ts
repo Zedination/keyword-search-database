@@ -49,6 +49,9 @@ window.addEventListener("load", () => {
 
     const saveConnectionButton = document.getElementById("submit-button-id") as Button;
     saveConnectionButton.addEventListener("click", () => saveConnections());
+
+    const testConnectionButton = document.getElementById("test-connection-button-id") as Button;
+    testConnectionButton.addEventListener("click", () => testConnection());
 });
 
 function setVSCodeMessageListener() {
