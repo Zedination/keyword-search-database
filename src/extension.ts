@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { getConnectionDetailWebviewContent, getDatabaseWebviewContent } from "./ui/getWebviewContent";
 import { ConnectionDataProvider } from "./providers/ConnectionDataProvider";
 import { Connection } from './model/Connection';
-import {testConnection, queryKeyword} from './utilities/databaseUtil';
+import { testConnection, queryKeyword } from './utilities/databaseUtil';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -67,6 +67,12 @@ export function activate(context: vscode.ExtensionContext) {
 						? ((panelConnectionDetail.title = connection.connectionName),
 							(panelConnectionDetail.webview.html = getConnectionDetailWebviewContent(panelConnectionDetail.webview, context, connection)))
 						: null;
+					if (connection.isActive) {
+						connectionList.forEach(c => {
+							if (c.id !== connection.id) c.isActive = false;
+						});
+					}
+					state.update('connectionList', JSON.stringify(connectionList));
 					break;
 				case 'testConnection':
 					testConnection(connection, context);
@@ -138,7 +144,7 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 		);
 		const activeConnection = connectionList.find((connection) => connection.isActive === true);
-		
+
 		if (!activeConnection) return;
 
 		// show loading popup

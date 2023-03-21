@@ -7,8 +7,10 @@ const { copy } = require("esbuild-plugin-copy");
 /** @type BuildOptions */
 const baseConfig = {
   bundle: true,
-  minify: process.env.NODE_ENV === "production",
-  sourcemap: process.env.NODE_ENV !== "production",
+  // minify: process.env.NODE_ENV === "production",
+  // sourcemap: process.env.NODE_ENV !== "production",
+  minify: true,
+  sourcemap: true,
 };
 
 // Config for extension source code (to be run in a Node-based context)
