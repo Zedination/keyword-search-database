@@ -1,7 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import * as fs from 'fs';
 import { v4 as uuidv4 } from "uuid";
 import { getConnectionDetailWebviewContent, getDatabaseWebviewContent } from "./ui/getWebviewContent";
 import { ConnectionDataProvider } from "./providers/ConnectionDataProvider";
@@ -158,6 +157,53 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(querySelectedKeyword);
+
+	// let disposable = vscode.commands.registerCommand('extension.openInChrome', () => {
+	//     let editor = vscode.window.activeTextEditor;
+	//     if (!editor) {
+	//         return;
+	//     }
+	//     let selection = editor.selection;
+	//     let text = editor.document.getText(selection);
+	//     if (!text) {
+	//         return;
+	//     }
+	// 	vscode.env.openExternal(vscode.Uri.parse(`https://www.google.com/search?q=${text}&btnI`));
+	// });
+	const queryInputKeyword = vscode.commands.registerCommand("queryKeyword.showDetailResultByInput", async () => {
+		vscode.window.showInputBox({
+			prompt: "Nhập từ khóa",
+			placeHolder: "Nhập từ khóa bạn muốn tìm..."
+		}).then(async function (text) {
+			if (!text || text === '') return;
+			let panelDetailResult = vscode.window.createWebviewPanel(
+				'connectionDetailWebview',
+				'connectionDetailWebview',
+				vscode.ViewColumn.One,
+				{
+					// Enable JavaScript in the webview
+					enableScripts: true,
+					// Restrict the webview to only load resources from the `out` directory
+					localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, "out")],
+				}
+			);
+			const activeConnection = connectionList.find((connection) => connection.isActive === true);
+
+			if (!activeConnection) return;
+
+			// show loading popup
+			const loadingPopup = vscode.window.createQuickPick();
+			loadingPopup.busy = true;
+			loadingPopup.placeholder = 'Loading...';
+			loadingPopup.show();
+			let data = await queryKeyword(activeConnection, context, text);
+			loadingPopup.hide();
+			panelDetailResult.webview.html = getDatabaseWebviewContent(panelDetailResult.webview, context, text, data);
+		});
+
+	});
+
+	context.subscriptions.push(queryInputKeyword);
 }
 
 // This method is called when your extension is deactivated

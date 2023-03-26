@@ -3,7 +3,7 @@
   "displayName": "Keyword Search Database",
   "description": "Extension giúp bạn tìm kiếm một từ khóa trong database",
   "publisher": "lookup-keyword-database",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "engines": {
     "vscode": "^1.76.0"
   },
@@ -19,8 +19,16 @@
         "title": "Hello World"
       },
       {
+        "command": "extension.openInChrome",
+        "title": "search google"
+      },
+      {
         "command": "queryKeyword.showDetailResult",
         "title": "showDetailResult"
+      },
+      {
+        "command": "queryKeyword.showDetailResultByInput",
+        "title": "Tìm kiếm infomation_schema!"
       },
       {
         "command": "keyword-search-database.tabConnectionManager",
@@ -82,6 +90,11 @@
         "command": "queryKeyword.showDetailResult",
         "mac": "cmd+alt+s",
         "when": "editorTextFocus"
+      },
+      {
+        "key": "ctrl+alt+q",
+        "command": "queryKeyword.showDetailResultByInput",
+        "mac": "cmd+alt+q"
       }
     ]
   },
@@ -120,6 +133,8 @@
     "monaco-editor": "^0.36.1",
     "mysql2": "^3.2.0",
     "node-fetch": "^3.3.1",
+    "pg": "^8.10.0",
+    "postgres": "^3.3.4",
     "uuid": "^9.0.0",
     "wanakana": "^5.1.0"
   }
